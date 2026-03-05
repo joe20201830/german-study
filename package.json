@@ -1,0 +1,14 @@
+{
+  "name": "german-study",
+  "version": "1.0.0",
+  "description": "German B2 study web app with AI-powered essay generation",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.39.0",
+    "dotenv": "^16.0.0",
+    "zod": "^3.22.0"
+  }
+}
