@@ -117,13 +117,30 @@ async function generateEssay(topic, difficulty, length) {
     }
   }
 
-  // Parse JSON from response
-  const jsonMatch = textContent.match(/\{[\s\S]*\}/);
+  // Extract JSON from response (handle markdown code blocks too)
+  const jsonMatch = textContent.match(/```json\s*([\s\S]*?)```/) ||
+                    textContent.match(/```\s*([\s\S]*?)```/) ||
+                    textContent.match(/(\{[\s\S]*\})/);
   if (!jsonMatch) {
     throw new Error('No JSON found in response');
   }
 
-  const parsed = JSON.parse(jsonMatch[0]);
+  const jsonStr = jsonMatch[1] || jsonMatch[0];
+
+  let parsed;
+  try {
+    parsed = JSON.parse(jsonStr);
+  } catch (e) {
+    // Attempt to salvage by stripping control characters that break JSON
+    const cleaned = jsonStr.replace(/[\u0000-\u001F\u007F]/g, (ch) => {
+      if (ch === '\n') return '\\n';
+      if (ch === '\r') return '\\r';
+      if (ch === '\t') return '\\t';
+      return '';
+    });
+    parsed = JSON.parse(cleaned);
+  }
+
   return EssayResponseSchema.parse(parsed);
 }
 
