@@ -258,7 +258,7 @@
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: 10px;
-      padding: 2rem 2.25rem;
+      padding: 2rem 2.25rem 2rem 3.25rem;
       margin-bottom: 1rem;
       font-size: 1.05rem;
       line-height: 1.85;
@@ -463,15 +463,206 @@
     [data-theme="dark"] .error-msg { background: #3a1010; color: #f4a0a0; }
     .error-msg.show { display: block; }
 
+    /* TTS play button per paragraph */
+    .para-wrapper {
+      position: relative;
+    }
+
+    .tts-btn {
+      position: absolute;
+      left: -2rem;
+      top: 0.15rem;
+      width: 22px;
+      height: 22px;
+      border: none;
+      background: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-size: 0.75rem;
+      padding: 0;
+      opacity: 0;
+      transition: opacity 0.15s, color 0.15s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .para-wrapper:hover .tts-btn,
+    .tts-btn.speaking { opacity: 1; }
+    .tts-btn:hover { color: var(--accent); }
+    .tts-btn.speaking { color: var(--accent); }
+
+    /* Copy feedback */
+    .action-btn.copied {
+      background: #2a7d3f;
+      color: white;
+      border-color: #2a7d3f;
+    }
+    [data-theme="dark"] .action-btn.copied {
+      background: #2a7d3f;
+      border-color: #2a7d3f;
+    }
+
+    /* Progression stats */
+    .stats-section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1.25rem 1.5rem;
+      margin-bottom: 1.5rem;
+      box-shadow: var(--shadow);
+    }
+
+    .stats-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 0.85rem;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .stats-title {
+      font-size: 0.85rem;
+      font-weight: 600;
+      letter-spacing: 0.01em;
+    }
+
+    .stats-header .chevron { font-size: 0.65rem; transition: transform 0.2s; color: var(--text-muted); }
+    .stats-header.open .chevron { transform: rotate(180deg); }
+
+    .stats-body { display: none; }
+    .stats-body.show { display: block; }
+
+    .stats-summary {
+      display: flex;
+      gap: 1.25rem;
+      margin-bottom: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .stat-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.15rem;
+    }
+
+    .stat-number {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--accent);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .stat-label {
+      font-size: 0.68rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--text-muted);
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: auto repeat(4, 1fr);
+      gap: 2px;
+      font-size: 0.75rem;
+    }
+
+    .stats-grid-header {
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      font-size: 0.65rem;
+      padding: 0.3rem 0.5rem;
+      text-align: center;
+    }
+
+    .stats-grid-label {
+      font-size: 0.78rem;
+      padding: 0.3rem 0.5rem;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+    }
+
+    .stats-grid-cell {
+      text-align: center;
+      padding: 0.3rem 0.5rem;
+      border-radius: 4px;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .stats-grid-cell.has-count {
+      background: var(--card-bg);
+      color: var(--text);
+      font-weight: 600;
+    }
+
+    .stats-grid-cell.no-count {
+      color: var(--text-muted);
+      opacity: 0.4;
+    }
+
+    .stats-clear {
+      margin-top: 0.75rem;
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      background: none;
+      border: none;
+      cursor: pointer;
+      text-decoration: underline;
+      font-family: inherit;
+      padding: 0;
+    }
+    .stats-clear:hover { color: var(--accent); }
+
+    /* User highlights */
+    .user-highlight {
+      background: #ffd84d;
+      border-radius: 2px;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .user-highlight:hover { background: #ffc107; }
+    [data-theme="dark"] .user-highlight { background: #7a5f00; color: var(--text); }
+    [data-theme="dark"] .user-highlight:hover { background: #9a7800; }
+
+    /* Copy FAB */
+    .copy-fab {
+      position: fixed;
+      top: 1rem;
+      right: 1rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      border-radius: 8px;
+      padding: 0.4rem 0.8rem;
+      font-size: 0.78rem;
+      font-family: inherit;
+      cursor: pointer;
+      box-shadow: var(--shadow);
+      display: none;
+      z-index: 100;
+      transition: background 0.15s, color 0.15s, border-color 0.15s;
+    }
+    .copy-fab:hover { background: var(--btn-hover); color: var(--text); }
+    .copy-fab.show { display: block; }
+    .copy-fab.copied { background: var(--accent); color: #fff; border-color: var(--accent); }
+
     @media (max-width: 600px) {
       .controls { flex-direction: column; align-items: stretch; }
       .control-group { min-width: unset; }
       .generate-btn { align-self: stretch; }
       .essay-card { padding: 1.25rem 1.25rem; }
+      .tts-btn { position: static; opacity: 1; margin-bottom: 0.25rem; }
+      .essay-card { padding-left: 1.25rem; }
     }
   </style>
 </head>
 <body>
+  <button class="copy-fab" id="copyFab">⎘ Kopieren</button>
   <div class="container">
     <header>
       <div class="header-top">
@@ -513,6 +704,18 @@
       <button class="generate-btn" id="generateBtn">Generieren</button>
     </div>
 
+    <div class="stats-section" id="statsSection">
+      <div class="stats-header" id="statsHeader">
+        <span class="stats-title">Lernfortschritt</span>
+        <span class="chevron">▼</span>
+      </div>
+      <div class="stats-body" id="statsBody">
+        <div class="stats-summary" id="statsSummary"></div>
+        <div class="stats-grid" id="statsGrid"></div>
+        <button class="stats-clear" id="statsClear">Statistik zurücksetzen</button>
+      </div>
+    </div>
+
     <div class="error-msg" id="errorMsg"></div>
     <div class="loading" id="loading">
       <div class="spinner"></div>
@@ -523,6 +726,7 @@
       <div class="action-bar">
         <button class="action-btn" id="translationBtn">Übersetzung anzeigen</button>
         <button class="action-btn" id="questionsBtn">Fragen anzeigen</button>
+        <button class="action-btn" id="copyBtn">Kopieren</button>
         <button class="action-btn" id="darkModeBtn">Dunkelmodus</button>
         <div class="timer" id="timer" title="Klicken zum Pausieren/Fortsetzen">0:00</div>
       </div>
@@ -557,6 +761,7 @@
     let timerInterval = null;
     let timerSeconds = 0;
     let timerPaused = false;
+    let currentEssayData = null; // store for copy
 
     // Theme init
     const savedTheme = localStorage.getItem('theme') || 'light';
@@ -571,12 +776,18 @@
     const translationBtn = document.getElementById('translationBtn');
     const questionsBtn = document.getElementById('questionsBtn');
     const questionsSection = document.getElementById('questionsSection');
+    const copyBtn = document.getElementById('copyBtn');
     const darkModeBtn = document.getElementById('darkModeBtn');
     const grammarHeader = document.getElementById('grammarHeader');
     const grammarBody = document.getElementById('grammarBody');
     const grammarList = document.getElementById('grammarList');
     const timerEl = document.getElementById('timer');
     const tooltip = document.getElementById('tooltip');
+    const statsHeader = document.getElementById('statsHeader');
+    const statsBody = document.getElementById('statsBody');
+    const statsSummary = document.getElementById('statsSummary');
+    const statsGrid = document.getElementById('statsGrid');
+    const statsClear = document.getElementById('statsClear');
 
     // Length pills
     document.querySelectorAll('.pill').forEach(pill => {
@@ -706,7 +917,7 @@
       let html = '';
       essayParas.forEach((para, i) => {
         const highlighted = buildHighlightedParagraph(para.trim(), escapedTerms);
-        html += `<p class="essay-para">${highlighted.replace(/\n/g, '<br>')}</p>`;
+        html += `<div class="para-wrapper"><button class="tts-btn" data-para-idx="${i}" title="Vorlesen">&#9654;</button><p class="essay-para">${highlighted.replace(/\n/g, '<br>')}</p></div>`;
         const trans = transParas[i] || transParas[transParas.length - 1] || '';
         if (trans) {
           html += `<p class="translation-para">${escapeHtml(trans.trim())}</p>`;
@@ -715,6 +926,15 @@
 
       essayCard.innerHTML = html;
       essayCard.classList.remove('show-translations');
+
+      // TTS buttons
+      const rawParas = essayParas.map(p => p.trim());
+      essayCard.querySelectorAll('.tts-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          speakParagraph(rawParas[parseInt(btn.dataset.paraIdx)], btn);
+        });
+      });
 
       essayCard.querySelectorAll('.vocab').forEach(span => {
         span.addEventListener('mouseenter', (e) => showTooltip(span, e));
@@ -794,7 +1014,185 @@
       el.nextElementSibling.classList.toggle('show');
     }
 
-    // Generate
+    // === Text-to-Speech ===
+    let currentUtterance = null;
+    let currentTtsBtn = null;
+
+    function stopTts() {
+      speechSynthesis.cancel();
+      if (currentTtsBtn) currentTtsBtn.classList.remove('speaking');
+      currentTtsBtn = null;
+      currentUtterance = null;
+    }
+
+    function speakParagraph(text, btn) {
+      if (currentTtsBtn === btn) { stopTts(); return; }
+      stopTts();
+      const utter = new SpeechSynthesisUtterance(text);
+      utter.lang = 'de-DE';
+      utter.rate = 0.9;
+      const voices = speechSynthesis.getVoices().filter(v => v.lang.startsWith('de'));
+      if (voices.length) utter.voice = voices[0];
+      btn.classList.add('speaking');
+      currentTtsBtn = btn;
+      currentUtterance = utter;
+      utter.onend = () => { btn.classList.remove('speaking'); currentTtsBtn = null; };
+      utter.onerror = () => { btn.classList.remove('speaking'); currentTtsBtn = null; };
+      speechSynthesis.speak(utter);
+    }
+
+    // === Copy essay ===
+    copyBtn.addEventListener('click', async () => {
+      if (!currentEssayData) return;
+      const d = currentEssayData;
+      const lines = [];
+      lines.push(d.essay);
+      lines.push('\n---\n');
+      lines.push('VOKABELN:');
+      d.vocabulary.forEach(v => {
+        lines.push(`- ${v.word} (${v.type}, ${v.gender_plural}) — ${v.translation}`);
+        lines.push(`  Beispiel: ${v.example}`);
+        lines.push(`  Hinweis: ${v.b2_note}`);
+      });
+      lines.push('\n---\n');
+      lines.push('GRAMMATIK:');
+      d.grammar_notes.forEach(n => lines.push(`- ${n}`));
+      lines.push('\n---\n');
+      lines.push('FRAGEN:');
+      d.questions.forEach((q, i) => {
+        lines.push(`${i + 1}. ${q.question}`);
+        lines.push(`   ${q.answer}`);
+      });
+      lines.push('\n---\n');
+      lines.push('ÜBERSETZUNG:');
+      lines.push(d.translation);
+
+      try {
+        await navigator.clipboard.writeText(lines.join('\n'));
+        copyBtn.textContent = 'Kopiert!';
+        copyBtn.classList.add('copied');
+        setTimeout(() => { copyBtn.textContent = 'Kopieren'; copyBtn.classList.remove('copied'); }, 1500);
+      } catch { /* clipboard not available */ }
+    });
+
+    // === Progression Tracking ===
+    const TOPIC_NAMES = {
+      environment: 'Umwelt',
+      technology: 'Technologie',
+      politics: 'Politik',
+      education: 'Bildung',
+    };
+    const DIFF_NAMES = { b1: 'B1', b2_standard: 'B2', b2_hard: 'B2+', c1: 'C1' };
+    const TOPICS = ['environment', 'technology', 'politics', 'education'];
+    const DIFFS = ['b1', 'b2_standard', 'b2_hard', 'c1'];
+
+    function getStats() {
+      try { return JSON.parse(localStorage.getItem('germanStudyStats') || '{}'); }
+      catch { return {}; }
+    }
+
+    function saveStats(stats) {
+      localStorage.setItem('germanStudyStats', JSON.stringify(stats));
+    }
+
+    function recordSession(topic, difficulty) {
+      const stats = getStats();
+      const key = `${topic}__${difficulty}`;
+      if (!stats.sessions) stats.sessions = {};
+      if (!stats.sessions[key]) stats.sessions[key] = 0;
+      stats.sessions[key]++;
+      if (!stats.totalCount) stats.totalCount = 0;
+      stats.totalCount++;
+      if (!stats.firstDate) stats.firstDate = new Date().toISOString();
+      stats.lastDate = new Date().toISOString();
+      saveStats(stats);
+      renderStats();
+    }
+
+    function renderStats() {
+      const stats = getStats();
+      const total = stats.totalCount || 0;
+
+      // Summary
+      const daysSince = stats.firstDate
+        ? Math.max(1, Math.ceil((Date.now() - new Date(stats.firstDate)) / 86400000))
+        : 0;
+      const lastStr = stats.lastDate
+        ? new Date(stats.lastDate).toLocaleDateString('de-DE', { day: 'numeric', month: 'short' })
+        : '—';
+
+      statsSummary.innerHTML = `
+        <div class="stat-item"><div class="stat-number">${total}</div><div class="stat-label">Aufsätze</div></div>
+        <div class="stat-item"><div class="stat-number">${daysSince || '—'}</div><div class="stat-label">Tage</div></div>
+        <div class="stat-item"><div class="stat-number">${lastStr}</div><div class="stat-label">Zuletzt</div></div>
+      `;
+
+      // Grid: topics x difficulties
+      let gridHtml = '<div class="stats-grid-header"></div>';
+      DIFFS.forEach(d => { gridHtml += `<div class="stats-grid-header">${DIFF_NAMES[d]}</div>`; });
+
+      TOPICS.forEach(t => {
+        gridHtml += `<div class="stats-grid-label">${TOPIC_NAMES[t]}</div>`;
+        DIFFS.forEach(d => {
+          const count = (stats.sessions && stats.sessions[`${t}__${d}`]) || 0;
+          const cls = count > 0 ? 'has-count' : 'no-count';
+          gridHtml += `<div class="stats-grid-cell ${cls}">${count || '—'}</div>`;
+        });
+      });
+
+      statsGrid.innerHTML = gridHtml;
+    }
+
+    // Stats collapsible
+    statsHeader.addEventListener('click', () => {
+      statsHeader.classList.toggle('open');
+      statsBody.classList.toggle('show');
+    });
+
+    statsClear.addEventListener('click', () => {
+      if (confirm('Statistik wirklich zurücksetzen?')) {
+        localStorage.removeItem('germanStudyStats');
+        renderStats();
+      }
+    });
+
+    // === Copy FAB ===
+    const copyFab = document.getElementById('copyFab');
+    copyFab.addEventListener('click', async () => {
+      if (!currentEssayData) return;
+      try {
+        await navigator.clipboard.writeText(currentEssayData.essay);
+        copyFab.textContent = 'Kopiert!';
+        copyFab.classList.add('copied');
+        setTimeout(() => { copyFab.textContent = '⎘ Kopieren'; copyFab.classList.remove('copied'); }, 1500);
+      } catch { /* clipboard not available */ }
+    });
+
+    // === Highlight ===
+    essayCard.addEventListener('mouseup', () => {
+      const sel = window.getSelection();
+      if (!sel || sel.isCollapsed || !sel.rangeCount) return;
+      const range = sel.getRangeAt(0);
+      if (!essayCard.contains(range.commonAncestorContainer)) return;
+      const mark = document.createElement('mark');
+      mark.className = 'user-highlight';
+      try {
+        range.surroundContents(mark);
+        mark.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const parent = mark.parentNode;
+          while (mark.firstChild) parent.insertBefore(mark.firstChild, mark);
+          parent.removeChild(mark);
+          parent.normalize();
+        });
+      } catch { /* selection crosses element boundaries — skip */ }
+      sel.removeAllRanges();
+    });
+
+    // Initial render
+    renderStats();
+
+    // === Generate ===
     generateBtn.addEventListener('click', async () => {
       const topic = document.getElementById('topic').value;
       const difficulty = document.getElementById('difficulty').value;
@@ -824,6 +1222,7 @@
         }
 
         const data = await res.json();
+        currentEssayData = data;
 
         renderEssay(data.essay, data.translation, data.vocabulary);
         renderGrammar(data.grammar_notes);
@@ -831,7 +1230,11 @@
 
         loading.classList.remove('show');
         content.classList.add('show');
+        copyFab.classList.add('show');
         startTimer();
+
+        // Record to progression stats
+        recordSession(topic, difficulty);
       } catch (err) {
         loading.classList.remove('show');
         errorMsg.textContent = `Fehler: ${err.message}`;
