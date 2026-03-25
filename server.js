@@ -182,6 +182,18 @@ const server = http.createServer(async (req, res) => {
     return;
   }
 
+  // Serve static image files from the app directory
+  if (req.method === 'GET' && /\.(png|jpg|jpeg|gif|svg)$/i.test(req.url)) {
+    const filePath = path.join(__dirname, req.url.replace(/^\//, ''));
+    if (fs.existsSync(filePath)) {
+      const ext = path.extname(filePath).toLowerCase();
+      const mime = { '.png': 'image/png', '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg', '.gif': 'image/gif', '.svg': 'image/svg+xml' }[ext] || 'application/octet-stream';
+      res.writeHead(200, { 'Content-Type': mime });
+      fs.createReadStream(filePath).pipe(res);
+      return;
+    }
+  }
+
   res.writeHead(404);
   res.end('Not found');
 });

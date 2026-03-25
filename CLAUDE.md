@@ -17,6 +17,7 @@ Single-page app: `server.js` (raw Node.js HTTP server) + `index.html` (all CSS/J
 ### Server (`server.js`)
 
 - **`POST /generate`** — accepts JSON `{ topic, difficulty, length }`, calls Claude, returns a single JSON response (not streamed).
+- **`GET /*.png|jpg|gif|svg`** — serves static image files from the app directory (used for the Little My sprite).
 - Model: `claude-sonnet-4-6`, max_tokens 8000.
 - Claude is prompted to return JSON. Response is extracted via regex (`/```json.../``` → /```...```/ → /{...}/`), then validated with Zod (`EssayResponseSchema`).
 - No thinking/streaming — synchronous request/response.
@@ -52,6 +53,7 @@ EssayResponseSchema {
 - Dark/light theme toggle (persisted in localStorage)
 - **Word highlight:** select any text in the essay with the mouse → wraps selection in `<mark class="user-highlight">` (yellow background). Click the mark to remove it. Uses `range.surroundContents(mark)`; silently skips if selection crosses element boundaries.
 - **Copy FAB:** fixed `⎘ Kopieren` button (top-right corner, `position: fixed`), hidden until the first essay is generated. Copies `currentEssayData.essay` plain text to clipboard. Flashes red on success.
+- **Little My sprite:** pixel-art character (`little-my.png`) that runs back and forth along the top edge of the controls box. Implemented as a `position: absolute` wrapper inside `.controls`. On load, the image is drawn to a hidden canvas; white pixels (R/G/B > 230) are set to transparent via `getImageData`; the processed canvas is displayed. Movement driven by `requestAnimationFrame`; direction flip via `scaleX(-1)` on the wrapper. Walk animation: 2-frame stepped bob (`steps(1, end) infinite alternate`, 0.22s per frame).
 
 ### Design
 
