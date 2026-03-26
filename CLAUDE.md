@@ -27,7 +27,7 @@ Single-page app: `server.js` (raw Node.js HTTP server) + `index.html` (all CSS/J
 ```
 EssayResponseSchema {
   essay: string              — full German essay
-  vocabulary: VocabWord[]    — 8-12 words with word, translation, type, gender_plural, example, b2_note
+  vocabulary: VocabWord[]    — 8-12 words with word, translation, type, gender_plural, examples (2), b2_note
   questions: Question[]      — 3-5 comprehension Q&A pairs (German)
   grammar_notes: string[]    — 2-4 grammar constructions used in the essay
   translation: string        — full English translation
@@ -44,7 +44,7 @@ EssayResponseSchema {
 **Essay rendering:**
 - Essay and translation split on `\n\n`, paired by paragraph index, rendered interleaved.
 - Translation paragraphs hidden by default; toggled via `.show-translations` class on `.essay-card`.
-- Vocabulary words: exact surface forms matched in essay text, wrapped in `<span class="vocab" data-word="...">` for hover/click tooltips.
+- Vocabulary words: exact surface forms matched in essay text, wrapped in `<span class="vocab" data-word="...">` for hover/click tooltips. Each tooltip shows 2 example sentences (distinct from the essay text).
 
 **Other features:**
 - Reading timer (click to pause/resume)

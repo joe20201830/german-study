@@ -12,7 +12,7 @@ const VocabWordSchema = z.object({
   translation: z.string(),
   type: z.string(),
   gender_plural: z.string(),
-  example: z.string(),
+  examples: z.array(z.string()).length(2),
   b2_note: z.string(),
 });
 
@@ -74,6 +74,7 @@ For vocabulary words:
 - For nouns: include article and plural form in gender_plural (e.g., "der Aufwand · Aufwände")
 - For verbs: include infinitive in gender_plural (e.g., "→ aufwenden")
 - For adjectives: include base form in gender_plural (e.g., "→ aufwendig")
+- examples must be 2 different sentences, both different from any sentence in the essay
 - b2_note should explain usage, register, or common contexts
 
 Return a JSON object with this exact structure:
@@ -85,7 +86,7 @@ Return a JSON object with this exact structure:
       "translation": "English translation",
       "type": "noun|verb|adjective|adverb|conjunction|preposition|phrase",
       "gender_plural": "der Aufwand · Aufwände",
-      "example": "example sentence using the word",
+      "examples": ["example sentence 1 using the word", "example sentence 2 using the word"],
       "b2_note": "usage note for B2 learners"
     }
   ],
