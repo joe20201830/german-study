@@ -441,9 +441,40 @@
       border-color: oklch(42% 0.10 155);
     }
 
+    /* Font size control */
+    .font-size-control {
+      display: flex;
+      align-items: center;
+      gap: 0.15rem;
+      margin-left: auto;
+    }
+    .font-size-btn {
+      font-family: 'Outfit', sans-serif;
+      font-size: 0.76rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      background: var(--btn-bg);
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      padding: 0.38rem 0.55rem;
+      cursor: pointer;
+      transition: background 0.15s var(--ease-out), color 0.15s var(--ease-out);
+      line-height: 1;
+    }
+    .font-size-btn:hover { background: var(--btn-hover); color: var(--text); }
+    .font-size-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+    .font-size-label {
+      font-family: 'Outfit', sans-serif;
+      font-size: 0.68rem;
+      font-variant-numeric: tabular-nums;
+      color: var(--text-muted);
+      min-width: 2.2rem;
+      text-align: center;
+    }
+
     /* Timer */
     .timer {
-      margin-left: auto;
+      margin-left: 0;
       font-family: 'Outfit', sans-serif;
       font-size: 0.78rem;
       font-weight: 400;
@@ -512,11 +543,11 @@
       padding: 0.6rem 1rem;
       margin-top: -0.55em;
       margin-bottom: 1.35em;
-      font-family: 'Lora', serif;
+      font-family: 'Outfit', sans-serif;
       font-size: 0.87rem;
       line-height: 1.65;
       color: var(--text-muted);
-      font-style: italic;
+      font-style: normal;
     }
     .essay-card.show-translations .translation-para { display: block; }
 
@@ -855,6 +886,11 @@
         <button class="action-btn" id="translationBtn">Übersetzung anzeigen</button>
         <button class="action-btn" id="questionsBtn">Fragen anzeigen</button>
         <button class="action-btn" id="copyBtn">Kopieren</button>
+        <div class="font-size-control">
+          <button class="font-size-btn" id="fontDecBtn" title="Schrift verkleinern">A−</button>
+          <span class="font-size-label" id="fontSizeLabel">100%</span>
+          <button class="font-size-btn" id="fontIncBtn" title="Schrift vergrößern">A+</button>
+        </div>
         <div class="timer" id="timer" title="Klicken zum Pausieren/Fortsetzen">0:00</div>
       </div>
 
@@ -919,6 +955,31 @@
     const statsSummary   = document.getElementById('statsSummary');
     const statsGrid      = document.getElementById('statsGrid');
     const statsClear     = document.getElementById('statsClear');
+
+    // Font size control
+    const FONT_STEPS = [80, 90, 100, 110, 120, 130, 140];
+    let fontSizeIndex = FONT_STEPS.indexOf(parseInt(localStorage.getItem('essayFontSize')) || 100);
+    if (fontSizeIndex === -1) fontSizeIndex = 2; // default 100%
+    const fontSizeLabel = document.getElementById('fontSizeLabel');
+    const fontDecBtn    = document.getElementById('fontDecBtn');
+    const fontIncBtn    = document.getElementById('fontIncBtn');
+
+    function applyFontSize() {
+      const pct = FONT_STEPS[fontSizeIndex];
+      essayCard.style.fontSize = (1.05 * pct / 100) + 'rem';
+      fontSizeLabel.textContent = pct + '%';
+      fontDecBtn.disabled = fontSizeIndex === 0;
+      fontIncBtn.disabled = fontSizeIndex === FONT_STEPS.length - 1;
+      localStorage.setItem('essayFontSize', pct);
+    }
+    applyFontSize();
+
+    fontDecBtn.addEventListener('click', () => {
+      if (fontSizeIndex > 0) { fontSizeIndex--; applyFontSize(); }
+    });
+    fontIncBtn.addEventListener('click', () => {
+      if (fontSizeIndex < FONT_STEPS.length - 1) { fontSizeIndex++; applyFontSize(); }
+    });
 
     // Length pills
     document.querySelectorAll('.pill').forEach(pill => {

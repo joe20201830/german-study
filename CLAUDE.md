@@ -60,7 +60,8 @@ EssayResponseSchema {
 
 ### Design — "Storybook Editorial"
 
-- **Fonts:** Fraunces (headings, optical size variable), Lora (essay body, serif), Outfit (UI elements, sans-serif) via Google Fonts.
+- **Font size control:** A−/A+ buttons in the action bar (80%–140% in 10% steps), adjusts essay card font size, persisted in localStorage.
+- **Fonts:** Fraunces (headings, optical size variable), Lora (essay body, serif), Outfit (UI elements + translation paragraphs, sans-serif) via Google Fonts.
 - **Colors:** OKLCH warm palette — cream background `oklch(97% 0.015 75)`, editorial red accent `oklch(42% 0.16 28)`, full dark mode via `[data-theme="dark"]` CSS custom properties.
 - **Layout:** single-column, max-width 780px, `.controls` has `border-top: 3px solid var(--accent)`.
 - **Accessibility:** `:focus-visible` outlines on all interactive elements, `prefers-reduced-motion` support.
