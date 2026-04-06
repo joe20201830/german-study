@@ -832,6 +832,11 @@
           <option value="technology">Technologie &amp; Wissenschaft</option>
           <option value="politics">Politik &amp; Wirtschaft</option>
           <option value="education">Bildung &amp; Gesundheit</option>
+          <option value="worklife">Arbeit &amp; Alltag</option>
+          <option value="housing">Wohnen &amp; Stadtleben</option>
+          <option value="relationships">Freundschaft &amp; Beziehungen</option>
+          <option value="money">Geld &amp; Konsum</option>
+          <option value="mobility">Reisen &amp; Mobilität</option>
         </select>
       </div>
 
@@ -1093,8 +1098,8 @@
     function buildHighlightedParagraph(text, escapedTerms) {
       const safe = escapeHtml(text);
       if (!escapedTerms.length) return safe;
-      const pattern = new RegExp(`(${escapedTerms.join('|')})`, 'g');
-      return safe.replace(pattern, (m) => `<span class="vocab" data-word="${m.replace(/"/g,'&quot;')}">${m}</span>`);
+      const pattern = new RegExp(`(^|[^\\p{L}\\p{N}])(${escapedTerms.join('|')})(?=$|[^\\p{L}\\p{N}])`, 'gu');
+      return safe.replace(pattern, (_, prefix, term) => `${prefix}<span class="vocab" data-word="${term.replace(/"/g,'&quot;')}">${term}</span>`);
     }
 
     // Essay + inline translation rendering
@@ -1241,7 +1246,9 @@
       lines.push('VOKABELN:');
       d.vocabulary.forEach(v => {
         lines.push(`- ${v.word} (${v.type}, ${v.gender_plural}) — ${v.translation}`);
-        lines.push(`  Beispiel: ${v.example}`);
+        (v.examples || []).forEach((example, index) => {
+          lines.push(`  Beispiel ${index + 1}: ${example}`);
+        });
         lines.push(`  Hinweis: ${v.b2_note}`);
       });
       lines.push('\n---\n');
@@ -1271,9 +1278,14 @@
       technology:  'Technologie',
       politics:    'Politik',
       education:   'Bildung',
+      worklife:    'Alltag',
+      housing:     'Wohnen',
+      relationships: 'Beziehungen',
+      money:       'Konsum',
+      mobility:    'Mobilität',
     };
     const DIFF_NAMES = { b1: 'B1', b2_standard: 'B2', b2_hard: 'B2+', c1: 'C1' };
-    const TOPICS     = ['environment', 'technology', 'politics', 'education'];
+    const TOPICS     = ['environment', 'technology', 'politics', 'education', 'worklife', 'housing', 'relationships', 'money', 'mobility'];
     const DIFFS      = ['b1', 'b2_standard', 'b2_hard', 'c1'];
 
     function getStats() {

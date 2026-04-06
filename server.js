@@ -34,6 +34,11 @@ const TOPIC_LABELS = {
   technology: 'Technologie und Wissenschaft',
   politics: 'Politik und Wirtschaft',
   education: 'Bildung und Gesundheit',
+  worklife: 'Arbeit und Alltag',
+  housing: 'Wohnen und Stadtleben',
+  relationships: 'Freundschaft und Beziehungen',
+  money: 'Geld und Konsum',
+  mobility: 'Reisen und Mobilitaet',
 };
 
 const DIFFICULTY_LABELS = {
@@ -48,6 +53,20 @@ const LENGTH_WORDS = {
   medium: '400-500',
   long: '600-800',
 };
+
+const GenerateRequestSchema = z.object({
+  topic: z.enum(Object.keys(TOPIC_LABELS)),
+  difficulty: z.enum(Object.keys(DIFFICULTY_LABELS)),
+  length: z.enum(Object.keys(LENGTH_WORDS)),
+});
+
+const MAX_REQUEST_BYTES = 10 * 1024;
+
+function createHttpError(statusCode, message) {
+  const err = new Error(message);
+  err.statusCode = statusCode;
+  return err;
+}
 
 function buildPrompt(topic, difficulty, length) {
   const topicLabel = TOPIC_LABELS[topic] || topic;
@@ -144,6 +163,44 @@ async function generateEssay(topic, difficulty, length) {
   return EssayResponseSchema.parse(parsed);
 }
 
+function parseJsonBody(req) {
+  return new Promise((resolve, reject) => {
+    let body = '';
+    let tooLarge = false;
+
+    req.on('data', (chunk) => {
+      if (tooLarge) return;
+      body += chunk;
+      if (Buffer.byteLength(body) > MAX_REQUEST_BYTES) {
+        tooLarge = true;
+      }
+    });
+
+    req.on('end', () => {
+      if (tooLarge) {
+        reject(createHttpError(413, 'Request body too large'));
+        return;
+      }
+
+      let parsed;
+      try {
+        parsed = JSON.parse(body || '{}');
+      } catch {
+        reject(createHttpError(400, 'Invalid JSON body'));
+        return;
+      }
+
+      try {
+        resolve(GenerateRequestSchema.parse(parsed));
+      } catch (err) {
+        reject(createHttpError(400, err.errors?.[0]?.message || 'Invalid request'));
+      }
+    });
+
+    req.on('error', reject);
+  });
+}
+
 const server = http.createServer(async (req, res) => {
   if (req.method === 'GET' && req.url === '/') {
     const html = fs.readFileSync(path.join(__dirname, 'index.html'), 'utf8');
@@ -153,23 +210,19 @@ const server = http.createServer(async (req, res) => {
   }
 
   if (req.method === 'POST' && req.url === '/generate') {
-    let body = '';
-    req.on('data', (chunk) => { body += chunk; });
-    req.on('end', async () => {
-      try {
-        const { topic, difficulty, length } = JSON.parse(body);
-        const result = await generateEssay(topic, difficulty, length);
-        res.writeHead(200, {
-          'Content-Type': 'application/json',
-          'Access-Control-Allow-Origin': '*',
-        });
-        res.end(JSON.stringify(result));
-      } catch (err) {
-        console.error('Error generating essay:', err);
-        res.writeHead(500, { 'Content-Type': 'application/json' });
-        res.end(JSON.stringify({ error: err.message }));
-      }
-    });
+    try {
+      const { topic, difficulty, length } = await parseJsonBody(req);
+      const result = await generateEssay(topic, difficulty, length);
+      res.writeHead(200, {
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
+      });
+      res.end(JSON.stringify(result));
+    } catch (err) {
+      console.error('Error generating essay:', err);
+      res.writeHead(err.statusCode || 500, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ error: err.message }));
+    }
     return;
   }
 

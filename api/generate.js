@@ -30,6 +30,11 @@ const TOPIC_LABELS = {
   technology: 'Technologie und Wissenschaft',
   politics: 'Politik und Wirtschaft',
   education: 'Bildung und Gesundheit',
+  worklife: 'Arbeit und Alltag',
+  housing: 'Wohnen und Stadtleben',
+  relationships: 'Freundschaft und Beziehungen',
+  money: 'Geld und Konsum',
+  mobility: 'Reisen und Mobilitaet',
 };
 
 const DIFFICULTY_LABELS = {
@@ -44,6 +49,20 @@ const LENGTH_WORDS = {
   medium: '400-500',
   long: '600-800',
 };
+
+const GenerateRequestSchema = z.object({
+  topic: z.enum(Object.keys(TOPIC_LABELS)),
+  difficulty: z.enum(Object.keys(DIFFICULTY_LABELS)),
+  length: z.enum(Object.keys(LENGTH_WORDS)),
+});
+
+const MAX_REQUEST_BYTES = 10 * 1024;
+
+function createHttpError(statusCode, message) {
+  const err = new Error(message);
+  err.statusCode = statusCode;
+  return err;
+}
 
 function buildPrompt(topic, difficulty, length) {
   const topicLabel = TOPIC_LABELS[topic] || topic;
@@ -99,10 +118,33 @@ Return a JSON object with this exact structure:
 function readBody(req) {
   return new Promise((resolve, reject) => {
     let body = '';
-    req.on('data', (chunk) => { body += chunk; });
+    let tooLarge = false;
+    req.on('data', (chunk) => {
+      if (tooLarge) return;
+      body += chunk;
+      if (Buffer.byteLength(body) > MAX_REQUEST_BYTES) {
+        tooLarge = true;
+      }
+    });
     req.on('end', () => {
-      try { resolve(JSON.parse(body)); }
-      catch (e) { reject(e); }
+      if (tooLarge) {
+        reject(createHttpError(413, 'Request body too large'));
+        return;
+      }
+
+      let parsed;
+      try {
+        parsed = JSON.parse(body || '{}');
+      } catch {
+        reject(createHttpError(400, 'Invalid JSON body'));
+        return;
+      }
+
+      try {
+        resolve(GenerateRequestSchema.parse(parsed));
+      } catch (err) {
+        reject(createHttpError(400, err.errors?.[0]?.message || 'Invalid request'));
+      }
     });
     req.on('error', reject);
   });
@@ -156,6 +198,6 @@ module.exports = async function handler(req, res) {
     res.status(200).json(result);
   } catch (err) {
     console.error('Error generating essay:', err);
-    res.status(500).json({ error: err.message });
+    res.status(err.statusCode || 500).json({ error: err.message });
   }
 };

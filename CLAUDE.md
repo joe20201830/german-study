@@ -37,7 +37,7 @@ EssayResponseSchema {
 ### Frontend (`index.html`)
 
 **Controls:**
-- Topic: 4 categories (environment, technology, politics, education)
+- Topic: 9 categories (environment, technology, politics, education, worklife, housing, relationships, money, mobility)
 - Difficulty: B1 / B2 Standard / B2 Schwer / C1
 - Length: Kurz (200-300) / Mittel (400-500) / Lang (600-800) words
 
